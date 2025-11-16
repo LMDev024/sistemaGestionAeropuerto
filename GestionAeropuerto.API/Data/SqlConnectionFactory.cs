@@ -1,0 +1,20 @@
+﻿using Microsoft.Data.SqlClient;
+
+namespace GestionAeropuerto.API.Data
+{
+    public class SqlConnectionFactory
+    {
+        private readonly string _connectionString;
+
+        public SqlConnectionFactory(IConfiguration configuration)
+        {
+            _connectionString = configuration.GetConnectionString("DefaultConnection")
+                ?? throw new ArgumentNullException("Connection string not found");
+        }
+
+        public SqlConnection CreateConnection()
+        {
+            return new SqlConnection(_connectionString);
+        }
+    }
+}
