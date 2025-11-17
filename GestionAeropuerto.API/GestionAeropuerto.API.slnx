@@ -1,4 +1,5 @@
 <Solution>
   <Project Path="../GestionAeropuerto.MVC/GestionAeropuerto.MVC.csproj" Id="705f7af1-478a-41dc-a6a6-178c7e705d17" />
+  <Project Path="../GestionAeropuerto.VB/GestionAeropuerto.VB.vbproj" Id="1a189e1f-4c93-45ef-b476-03d7c2c8926c" />
   <Project Path="GestionAeropuerto.API.csproj" />
 </Solution>
