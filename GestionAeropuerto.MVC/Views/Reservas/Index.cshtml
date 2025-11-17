@@ -1,0 +1,177 @@
+﻿@model IEnumerable<GestionAeropuerto.MVC.Models.ReservaViewModel>
+
+@{
+    ViewBag.Title = "Gestión de Reservas";
+}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h2>
+                <i class="glyphicon glyphicon-list-alt"></i> Gestión de Reservas
+            </h2>
+            <hr />
+        </div>
+    </div>
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <strong>Error:</strong> @ViewBag.Error
+        </div>
+    }
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <strong>Éxito:</strong> @TempData["Success"]
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <strong>Error:</strong> @TempData["Error"]
+        </div>
+    }
+
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <a href="@Url.Action("Create")" class="btn btn-primary">
+                <i class="glyphicon glyphicon-plus"></i> Nueva Reserva
+            </a>
+            <a href="@Url.Action("BuscarPorCodigo")" class="btn btn-info">
+                <i class="glyphicon glyphicon-search"></i> Buscar por Código
+            </a>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <table class="table table-striped table-hover" id="tablaReservas">
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Pasajero</th>
+                        <th>Vuelo</th>
+                        <th>Asiento</th>
+                        <th>Clase</th>
+                        <th>Estado</th>
+                        <th>Precio</th>
+                        <th>Fecha Reserva</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var reserva in Model)
+                    {
+                        <tr>
+                            <td><strong>@reserva.CodigoReserva</strong></td>
+                            <td>@reserva.NombrePasajero</td>
+                            <td>@reserva.NumeroVuelo</td>
+                            <td><span class="badge">@reserva.NumeroAsiento</span></td>
+                            <td>
+                                @switch (reserva.Clase)
+                                {
+                                    case "Economica":
+                                        <span class="label label-default">Económica</span>
+                                        break;
+                                    case "Ejecutiva":
+                                        <span class="label label-primary">Ejecutiva</span>
+                                        break;
+                                    case "Primera":
+                                        <span class="label label-warning">Primera</span>
+                                        break;
+                                }
+                            </td>
+                            <td>
+                                @switch (reserva.Estado)
+                                {
+                                    case "Confirmada":
+                                        <span class="label label-success">@reserva.Estado</span>
+                                        break;
+                                    case "CheckIn":
+                                        <span class="label label-info">Check-in</span>
+                                        break;
+                                    case "Abordado":
+                                        <span class="label label-primary">@reserva.Estado</span>
+                                        break;
+                                    case "Cancelada":
+                                        <span class="label label-danger">@reserva.Estado</span>
+                                        break;
+                                    default:
+                                        <span class="label label-default">@reserva.Estado</span>
+                                        break;
+                                }
+                            </td>
+                            <td>@reserva.Precio.ToString("C", new System.Globalization.CultureInfo("es-CO"))</td>
+                            <td>@reserva.FechaReserva.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td>
+                                <a href="@Url.Action("Details", new { id = reserva.ReservaID })"
+                                   class="btn btn-sm btn-info" title="Ver detalles">
+                                    <i class="glyphicon glyphicon-eye-open"></i>
+                                </a>
+                                @if (reserva.Estado == "Confirmada")
+                                {
+                                    <button type="button" class="btn btn-sm btn-danger"
+                                            onclick="cancelarReserva(@reserva.ReservaID, '@reserva.CodigoReserva')"
+                                            title="Cancelar">
+                                        <i class="glyphicon glyphicon-remove"></i>
+                                    </button>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para cancelar -->
+<div class="modal fade" id="modalCancelar" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Cancelar Reserva</h4>
+            </div>
+            <form id="formCancelar" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <p>¿Está seguro que desea cancelar la reserva <strong id="codigoReserva"></strong>?</p>
+                    <div class="form-group">
+                        <label>Motivo (opcional):</label>
+                        <textarea name="motivo" class="form-control" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-danger">Cancelar Reserva</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#tablaReservas').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json"
+                },
+                "order": [[7, "desc"]]
+            });
+        });
+
+        function cancelarReserva(id, codigo) {
+            $('#codigoReserva').text(codigo);
+            $('#formCancelar').attr('action', '@Url.Action("Cancelar")/' + id);
+            $('#modalCancelar').modal('show');
+        }
+    </script>
+}

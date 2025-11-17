@@ -1,0 +1,209 @@
+﻿@model GestionAeropuerto.MVC.Models.VueloViewModel
+
+@{
+    ViewBag.Title = "Detalles del Vuelo";
+}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h2>
+                <i class="glyphicon glyphicon-plane"></i> Detalles del Vuelo @Model.NumeroVuelo
+            </h2>
+            <hr />
+        </div>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <strong>Éxito:</strong> @TempData["Success"]
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <strong>Error:</strong> @TempData["Error"]
+        </div>
+    }
+
+    <div class="row">
+        <!-- Panel de Información General -->
+        <div class="col-md-6">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><i class="glyphicon glyphicon-info-sign"></i> Información General</h3>
+                </div>
+                <div class="panel-body">
+                    <dl class="dl-horizontal">
+                        <dt>@Html.DisplayNameFor(model => model.NumeroVuelo)</dt>
+                        <dd><strong class="text-primary">@Model.NumeroVuelo</strong></dd>
+
+                        <dt>@Html.DisplayNameFor(model => model.NombreAerolinea)</dt>
+                        <dd>@Model.NombreAerolinea</dd>
+
+                        <dt>@Html.DisplayNameFor(model => model.ModeloAeronave)</dt>
+                        <dd>@Model.ModeloAeronave</dd>
+
+                        <dt>@Html.DisplayNameFor(model => model.Estado)</dt>
+                        <dd>
+                            @switch (Model.Estado)
+                            {
+                                case "Programado":
+                                    <span class="label label-primary">@Model.Estado</span>
+                                    break;
+                                case "Abordando":
+                                    <span class="label label-warning">@Model.Estado</span>
+                                    break;
+                                case "En Vuelo":
+                                    <span class="label label-info">@Model.Estado</span>
+                                    break;
+                                case "Aterrizado":
+                                    <span class="label label-success">@Model.Estado</span>
+                                    break;
+                                case "Cancelado":
+                                    <span class="label label-danger">@Model.Estado</span>
+                                    break;
+                                case "Retrasado":
+                                    <span class="label label-warning">@Model.Estado</span>
+                                    break;
+                                default:
+                                    <span class="label label-default">@Model.Estado</span>
+                                    break;
+                            }
+                        </dd>
+
+                        <dt>@Html.DisplayNameFor(model => model.NumeroPuerta)</dt>
+                        <dd>
+                            @if (!string.IsNullOrEmpty(Model.NumeroPuerta))
+                            {
+                                <span class="badge badge-info">Puerta @Model.NumeroPuerta</span>
+                            }
+                            else
+                            {
+                                <span class="text-muted">Sin puerta asignada</span>
+                            }
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel de Ruta y Horarios -->
+        <div class="col-md-6">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><i class="glyphicon glyphicon-road"></i> Ruta y Horarios</h3>
+                </div>
+                <div class="panel-body">
+                    <dl class="dl-horizontal">
+                        <dt>@Html.DisplayNameFor(model => model.Origen)</dt>
+                        <dd><strong>@Model.Origen</strong></dd>
+
+                        <dt>@Html.DisplayNameFor(model => model.Destino)</dt>
+                        <dd><strong>@Model.Destino</strong></dd>
+
+                        <dt>@Html.DisplayNameFor(model => model.FechaSalida)</dt>
+                        <dd>@Model.FechaSalida.ToString("dddd, dd MMMM yyyy HH:mm")</dd>
+
+                        <dt>@Html.DisplayNameFor(model => model.FechaLlegada)</dt>
+                        <dd>@Model.FechaLlegada.ToString("dddd, dd MMMM yyyy HH:mm")</dd>
+
+                        <dt>Duración Estimada</dt>
+                        <dd>
+                            @{
+                                var duracion = Model.FechaLlegada - Model.FechaSalida;
+                                var horas = (int)duracion.TotalHours;
+                                var minutos = duracion.Minutes;
+                            }
+                            @horas h @minutos min
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Panel de Ocupación -->
+        <div class="col-md-6">
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><i class="glyphicon glyphicon-user"></i> Ocupación</h3>
+                </div>
+                <div class="panel-body">
+                    <dl class="dl-horizontal">
+                        <dt>@Html.DisplayNameFor(model => model.AsientosDisponibles)</dt>
+                        <dd>
+                            @if (Model.AsientosDisponibles > 10)
+                            {
+                                <span class="text-success"><strong>@Model.AsientosDisponibles</strong></span>
+                            }
+                            else if (Model.AsientosDisponibles > 0)
+                            {
+                                <span class="text-warning"><strong>@Model.AsientosDisponibles</strong></span>
+                            }
+                            else
+                            {
+                                <span class="text-danger"><strong>VUELO LLENO</strong></span>
+                            }
+                        </dd>
+
+                        <dt>@Html.DisplayNameFor(model => model.PrecioBase)</dt>
+                        <dd>@Model.PrecioBase.ToString("C", new System.Globalization.CultureInfo("es-CO"))</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel de Acciones -->
+        <div class="col-md-6">
+            <div class="panel panel-warning">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><i class="glyphicon glyphicon-cog"></i> Cambiar Estado</h3>
+                </div>
+                <div class="panel-body">
+                    @using (Html.BeginForm("ActualizarEstado", "Vuelos", FormMethod.Post, new { @class = "form-horizontal" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.Hidden("id", Model.VueloID)
+
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">Nuevo Estado:</label>
+                            <div class="col-sm-8">
+                                <select name="nuevoEstado" class="form-control" required>
+                                    <option value="">Seleccione...</option>
+                                    <option value="Programado">Programado</option>
+                                    <option value="Abordando">Abordando</option>
+                                    <option value="En Vuelo">En Vuelo</option>
+                                    <option value="Aterrizado">Aterrizado</option>
+                                    <option value="Retrasado">Retrasado</option>
+                                    <option value="Cancelado">Cancelado</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-sm-offset-4 col-sm-8">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="glyphicon glyphicon-refresh"></i> Actualizar Estado
+                                </button>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <a href="@Url.Action("Index")" class="btn btn-default">
+                <i class="glyphicon glyphicon-arrow-left"></i> Volver a la Lista
+            </a>
+        </div>
+    </div>
+</div>

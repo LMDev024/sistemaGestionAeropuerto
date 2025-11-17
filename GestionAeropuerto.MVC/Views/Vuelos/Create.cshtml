@@ -1,0 +1,146 @@
+﻿@model GestionAeropuerto.MVC.Models.CrearVueloViewModel
+
+@{
+    ViewBag.Title = "Crear Nuevo Vuelo";
+}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h2>
+                <i class="glyphicon glyphicon-plus"></i> Crear Nuevo Vuelo
+            </h2>
+            <hr />
+        </div>
+    </div>
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <strong>Error:</strong> @ViewBag.Error
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Información del Vuelo</h3>
+                </div>
+                <div class="panel-body">
+                    @using (Html.BeginForm("Create", "Vuelos", FormMethod.Post, new { @class = "form-horizontal" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.NumeroVuelo, new { @class = "control-label col-md-3" })
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(model => model.NumeroVuelo, new { @class = "form-control", placeholder = "Ejemplo: AV101" })
+                                @Html.ValidationMessageFor(model => model.NumeroVuelo, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.AerolineaID, new { @class = "control-label col-md-3" })
+                            <div class="col-md-9">
+                                <select name="AerolineaID" class="form-control" required>
+                                    <option value="">Seleccione una aerolínea...</option>
+                                    <option value="1">Avianca</option>
+                                    <option value="2">LATAM Airlines</option>
+                                    <option value="3">Copa Airlines</option>
+                                    <option value="4">American Airlines</option>
+                                    <option value="5">Iberia</option>
+                                    <option value="6">Viva Air</option>
+                                </select>
+                                @Html.ValidationMessageFor(model => model.AerolineaID, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.AeronaveID, new { @class = "control-label col-md-3" })
+                            <div class="col-md-9">
+                                <select name="AeronaveID" class="form-control" required>
+                                    <option value="">Seleccione una aeronave...</option>
+                                    <option value="1">Boeing 787-8 (HK-5001)</option>
+                                    <option value="2">Airbus A320 (HK-5002)</option>
+                                    <option value="3">Boeing 737-800 (HK-5003)</option>
+                                    <option value="4">Boeing 767-300 (CC-BGL)</option>
+                                    <option value="5">Airbus A321 (CC-BGM)</option>
+                                    <option value="6">Boeing 737-MAX 9 (HP-1825)</option>
+                                    <option value="7">Boeing 737-800 (HP-1826)</option>
+                                    <option value="8">Boeing 777-200 (N12345)</option>
+                                    <option value="9">Airbus A330-200 (N67890)</option>
+                                    <option value="10">Airbus A330-300 (EC-LUB)</option>
+                                </select>
+                                @Html.ValidationMessageFor(model => model.AeronaveID, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Origen, new { @class = "control-label col-md-3" })
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(model => model.Origen, new { @class = "form-control", placeholder = "Ejemplo: Bogotá (BOG)" })
+                                @Html.ValidationMessageFor(model => model.Origen, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Destino, new { @class = "control-label col-md-3" })
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(model => model.Destino, new { @class = "form-control", placeholder = "Ejemplo: Miami (MIA)" })
+                                @Html.ValidationMessageFor(model => model.Destino, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.FechaSalida, new { @class = "control-label col-md-3" })
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(model => model.FechaSalida, "{0:yyyy-MM-ddTHH:mm}", new { @class = "form-control", type = "datetime-local" })
+                                @Html.ValidationMessageFor(model => model.FechaSalida, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.FechaLlegada, new { @class = "control-label col-md-3" })
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(model => model.FechaLlegada, "{0:yyyy-MM-ddTHH:mm}", new { @class = "form-control", type = "datetime-local" })
+                                @Html.ValidationMessageFor(model => model.FechaLlegada, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.PrecioBase, new { @class = "control-label col-md-3" })
+                            <div class="col-md-9">
+                                <div class="input-group">
+                                    <span class="input-group-addon">$</span>
+                                    @Html.TextBoxFor(model => model.PrecioBase, new { @class = "form-control", type = "number", step = "1000", placeholder = "450000" })
+                                    <span class="input-group-addon">COP</span>
+                                </div>
+                                @Html.ValidationMessageFor(model => model.PrecioBase, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <hr />
+
+                        <div class="form-group">
+                            <div class="col-md-offset-3 col-md-9">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="glyphicon glyphicon-ok"></i> Crear Vuelo
+                                </button>
+                                <a href="@Url.Action("Index")" class="btn btn-default btn-lg">
+                                    <i class="glyphicon glyphicon-remove"></i> Cancelar
+                                </a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

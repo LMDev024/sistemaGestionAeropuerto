@@ -1,0 +1,123 @@
+﻿@model GestionAeropuerto.MVC.Models.PasajeroViewModel
+
+@{
+    ViewBag.Title = "Editar Pasajero";
+}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h2>
+                <i class="glyphicon glyphicon-edit"></i> Editar Información del Pasajero
+            </h2>
+            <hr />
+        </div>
+    </div>
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <strong>Error:</strong> @ViewBag.Error
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <div class="panel panel-warning">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Actualizar Datos</h3>
+                </div>
+                <div class="panel-body">
+                    @using (Html.BeginForm("Edit", "Pasajeros", FormMethod.Post, new { @class = "form-horizontal" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(model => model.PasajeroID)
+                        @Html.HiddenFor(model => model.TipoDocumento)
+                        @Html.HiddenFor(model => model.NumeroDocumento)
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                        <div class="alert alert-info">
+                            <i class="glyphicon glyphicon-info-sign"></i>
+                            <strong>Nota:</strong> El tipo y número de documento no pueden ser modificados
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-md-3">Documento:</label>
+                            <div class="col-md-9">
+                                <p class="form-control-static">
+                                    <strong>@Model.TipoDocumento - @Model.NumeroDocumento</strong>
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Nombre, new { @class = "control-label col-md-3" })
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(model => model.Nombre, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.Nombre, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Apellido, new { @class = "control-label col-md-3" })
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(model => model.Apellido, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.Apellido, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.FechaNacimiento, new { @class = "control-label col-md-3" })
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(model => model.FechaNacimiento, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                                @Html.ValidationMessageFor(model => model.FechaNacimiento, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Nacionalidad, new { @class = "control-label col-md-3" })
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(model => model.Nacionalidad, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.Nacionalidad, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Email, new { @class = "control-label col-md-3" })
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(model => model.Email, new { @class = "form-control", type = "email" })
+                                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Telefono, new { @class = "control-label col-md-3" })
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(model => model.Telefono, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.Telefono, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <hr />
+
+                        <div class="form-group">
+                            <div class="col-md-offset-3 col-md-9">
+                                <button type="submit" class="btn btn-warning btn-lg">
+                                    <i class="glyphicon glyphicon-ok"></i> Guardar Cambios
+                                </button>
+                                <a href="@Url.Action("Details", new { id = Model.PasajeroID })" class="btn btn-default btn-lg">
+                                    <i class="glyphicon glyphicon-remove"></i> Cancelar
+                                </a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

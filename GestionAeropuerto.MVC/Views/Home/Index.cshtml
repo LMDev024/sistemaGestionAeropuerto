@@ -1,0 +1,389 @@
+﻿@{
+    ViewBag.Title = "Dashboard - Sistema de Gestión Aeroportuaria";
+}
+
+<style>
+    .stat-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 25px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        transition: transform 0.3s ease;
+    }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        .stat-card.green {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+
+        .stat-card.orange {
+            background: linear-gradient(135deg, #f2994a 0%, #f2c94c 100%);
+        }
+
+        .stat-card.red {
+            background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+        }
+
+        .stat-card.blue {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+    .stat-number {
+        font-size: 3em;
+        font-weight: bold;
+        margin: 10px 0;
+    }
+
+    .stat-label {
+        font-size: 1.1em;
+        opacity: 0.9;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .stat-icon {
+        font-size: 2.5em;
+        opacity: 0.3;
+        float: right;
+    }
+
+    .welcome-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 30px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+        .welcome-header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .welcome-header p {
+            margin: 10px 0 0 0;
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+</style>
+
+<div class="welcome-header">
+    <h1><i class="glyphicon glyphicon-dashboard"></i> Dashboard del Aeropuerto</h1>
+    <p>Sistema de Gestión Integral - @DateTime.Now.ToString("dddd, dd MMMM yyyy")</p>
+</div>
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger">
+        <strong>Error:</strong> @ViewBag.Error
+    </div>
+}
+
+<!-- KPIs Principales -->
+<div class="row">
+    <div class="col-md-3">
+        <div class="stat-card">
+            <span class="stat-icon"><i class="glyphicon glyphicon-plane"></i></span>
+            <div class="stat-label">Total Vuelos</div>
+            <div class="stat-number">@ViewBag.TotalVuelos</div>
+            <small>@ViewBag.VuelosHoy vuelos hoy</small>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="stat-card green">
+            <span class="stat-icon"><i class="glyphicon glyphicon-list-alt"></i></span>
+            <div class="stat-label">Reservas</div>
+            <div class="stat-number">@ViewBag.TotalReservas</div>
+            <small>@ViewBag.ReservasActivas activas</small>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="stat-card orange">
+            <span class="stat-icon"><i class="glyphicon glyphicon-user"></i></span>
+            <div class="stat-label">Pasajeros</div>
+            <div class="stat-number">@ViewBag.TotalPasajeros</div>
+            <small>Registrados</small>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="stat-card red">
+            <span class="stat-icon"><i class="glyphicon glyphicon-usd"></i></span>
+            <div class="stat-label">Ingresos</div>
+            <div class="stat-number" style="font-size: 1.8em;">
+                @(((decimal)ViewBag.IngresosEstimados / 1000000).ToString("0.0"))M
+            </div>
+            <small>COP estimados</small>
+        </div>
+    </div>
+</div>
+
+<!-- Estado de Vuelos -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="glyphicon glyphicon-stats"></i> Estado de Vuelos</h3>
+            </div>
+            <div class="panel-body">
+                <div class="row text-center">
+                    <div class="col-md-3">
+                        <div class="well">
+                            <h3 style="color: #3498db; margin: 0;">@ViewBag.VuelosProgramados</h3>
+                            <p style="margin: 10px 0 0 0;">Programados</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="well">
+                            <h3 style="color: #f39c12; margin: 0;">@ViewBag.VuelosAbordando</h3>
+                            <p style="margin: 10px 0 0 0;">Abordando</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="well">
+                            <h3 style="color: #27ae60; margin: 0;">@ViewBag.VuelosEnVuelo</h3>
+                            <p style="margin: 10px 0 0 0;">En Vuelo</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="well">
+                            <h3 style="color: #95a5a6; margin: 0;">@ViewBag.VuelosAterrizados</h3>
+                            <p style="margin: 10px 0 0 0;">Aterrizados</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Próximos Vuelos -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="glyphicon glyphicon-time"></i> Próximos Vuelos</h3>
+            </div>
+            <div class="panel-body">
+                @if (ViewBag.ProximosVuelos != null && ViewBag.ProximosVuelos.Count > 0)
+                {
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Vuelo</th>
+                                    <th>Aerolínea</th>
+                                    <th>Origen</th>
+                                    <th>Destino</th>
+                                    <th>Salida</th>
+                                    <th>Puerta</th>
+                                    <th>Asientos Disp.</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var vuelo in ViewBag.ProximosVuelos)
+                                {
+                                    <tr>
+                                        <td><strong>@vuelo.NumeroVuelo</strong></td>
+                                        <td>@vuelo.NombreAerolinea</td>
+                                        <td>@vuelo.Origen</td>
+                                        <td>@vuelo.Destino</td>
+                                        <td>@vuelo.FechaSalida.ToString("HH:mm")</td>
+                                        <td>
+                                            @if (!string.IsNullOrEmpty(vuelo.NumeroPuerta))
+                                            {
+                                                <span class="badge">@vuelo.NumeroPuerta</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">-</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (vuelo.AsientosDisponibles > 10)
+                                            {
+                                                <span class="text-success"><strong>@vuelo.AsientosDisponibles</strong></span>
+                                            }
+                                            else if (vuelo.AsientosDisponibles > 0)
+                                            {
+                                                <span class="text-warning"><strong>@vuelo.AsientosDisponibles</strong></span>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-danger"><strong>LLENO</strong></span>
+                                            }
+                                        </td>
+                                        <td><span class="label label-primary">@vuelo.Estado</span></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-info">
+                        <i class="glyphicon glyphicon-info-sign"></i> No hay vuelos programados próximamente.
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Accesos Rápidos -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-success">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="glyphicon glyphicon-flash"></i> Accesos Rápidos</h3>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-3 text-center">
+                        <a href="@Url.Action("Create", "Vuelos")" class="btn btn-primary btn-lg btn-block" style="padding: 30px;">
+                            <i class="glyphicon glyphicon-plus" style="font-size: 2em;"></i>
+                            <br /><br />
+                            <strong>Crear Vuelo</strong>
+                        </a>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <a href="@Url.Action("Create", "Reservas")" class="btn btn-success btn-lg btn-block" style="padding: 30px;">
+                            <i class="glyphicon glyphicon-list-alt" style="font-size: 2em;"></i>
+                            <br /><br />
+                            <strong>Nueva Reserva</strong>
+                        </a>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <a href="@Url.Action("TableroSalidas", "Vuelos")" class="btn btn-info btn-lg btn-block" style="padding: 30px;">
+                            <i class="glyphicon glyphicon-dashboard" style="font-size: 2em;"></i>
+                            <br /><br />
+                            <strong>Tablero Salidas</strong>
+                        </a>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <a href="@Url.Action("BuscarPorCodigo", "Reservas")" class="btn btn-warning btn-lg btn-block" style="padding: 30px;">
+                            <i class="glyphicon glyphicon-search" style="font-size: 2em;"></i>
+                            <br /><br />
+                            <strong>Buscar Reserva</strong>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Gráfico con Chart.js -->
+<div class="row">
+    <div class="col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="glyphicon glyphicon-stats"></i> Distribución de Vuelos por Estado</h3>
+            </div>
+            <div class="panel-body">
+                <canvas id="chartEstadoVuelos" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="glyphicon glyphicon-stats"></i> Estado de Reservas</h3>
+            </div>
+            <div class="panel-body">
+                <canvas id="chartReservas" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <script>
+        // Gráfico de Vuelos
+        var ctx1 = document.getElementById('chartEstadoVuelos').getContext('2d');
+        var chartVuelos = new Chart(ctx1, {
+            type: 'doughnut',
+            data: {
+                labels: ['Programados', 'Abordando', 'En Vuelo', 'Aterrizados'],
+                datasets: [{
+                    data: [@ViewBag.VuelosProgramados, @ViewBag.VuelosAbordando, @ViewBag.VuelosEnVuelo, @ViewBag.VuelosAterrizados],
+                    backgroundColor: [
+                        'rgba(52, 152, 219, 0.8)',
+                        'rgba(243, 156, 18, 0.8)',
+                        'rgba(39, 174, 96, 0.8)',
+                        'rgba(149, 165, 166, 0.8)'
+                    ],
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                    },
+                    title: {
+                        display: false
+                    }
+                }
+            }
+        });
+
+        // Gráfico de Reservas
+        var ctx2 = document.getElementById('chartReservas').getContext('2d');
+        var chartReservas = new Chart(ctx2, {
+            type: 'bar',
+            data: {
+                labels: ['Total Reservas', 'Activas', 'Canceladas'],
+                datasets: [{
+                    label: 'Cantidad',
+                    data: [@ViewBag.TotalReservas, @ViewBag.ReservasActivas, (@ViewBag.TotalReservas - @ViewBag.ReservasActivas)],
+                    backgroundColor: [
+                        'rgba(52, 152, 219, 0.8)',
+                        'rgba(39, 174, 96, 0.8)',
+                        'rgba(231, 76, 60, 0.8)'
+                    ],
+                    borderColor: [
+                        'rgba(52, 152, 219, 1)',
+                        'rgba(39, 174, 96, 1)',
+                        'rgba(231, 76, 60, 1)'
+                    ],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+}

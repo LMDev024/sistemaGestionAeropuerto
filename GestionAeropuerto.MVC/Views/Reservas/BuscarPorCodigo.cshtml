@@ -1,0 +1,54 @@
+﻿@{
+    ViewBag.Title = "Buscar Reserva";
+}
+
+<div class="container">
+    <div class="row" style="margin-top: 50px;">
+        <div class="col-md-6 col-md-offset-3">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title text-center">
+                        <i class="glyphicon glyphicon-search"></i> Buscar Reserva por Código
+                    </h3>
+                </div>
+                <div class="panel-body" style="padding: 30px;">
+                    @if (ViewBag.Error != null)
+                    {
+                        <div class="alert alert-danger">
+                            <strong>Error:</strong> @ViewBag.Error
+                        </div>
+                    }
+
+                    @using (Html.BeginForm("BuscarPorCodigo", "Reservas", FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <div class="form-group">
+                            <label class="control-label">Código de Reserva:</label>
+                            <input type="text" name="codigoReserva" class="form-control input-lg"
+                                   placeholder="Ejemplo: ABC123" required
+                                   style="text-align: center; font-size: 1.5em; letter-spacing: 2px;" />
+                            <p class="help-block text-center">
+                                Ingrese el código de 6 caracteres de su reserva
+                            </p>
+                        </div>
+
+                        <div class="form-group text-center">
+                            <button type="submit" class="btn btn-primary btn-lg btn-block">
+                                <i class="glyphicon glyphicon-search"></i> Buscar Reserva
+                            </button>
+                        </div>
+                    }
+
+                    <hr />
+
+                    <div class="text-center">
+                        <a href="@Url.Action("Index")" class="btn btn-default">
+                            <i class="glyphicon glyphicon-arrow-left"></i> Volver a Reservas
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

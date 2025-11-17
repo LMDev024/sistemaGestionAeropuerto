@@ -1,0 +1,151 @@
+﻿@model GestionAeropuerto.MVC.Models.ReservaViewModel
+
+@{
+    ViewBag.Title = "Detalles de la Reserva";
+}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h2>
+                <i class="glyphicon glyphicon-list-alt"></i> Detalles de la Reserva
+            </h2>
+            <hr />
+        </div>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            @TempData["Success"]
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><i class="glyphicon glyphicon-info-sign"></i> Información de la Reserva</h3>
+                </div>
+                <div class="panel-body">
+                    <dl class="dl-horizontal">
+                        <dt>@Html.DisplayNameFor(model => model.CodigoReserva)</dt>
+                        <dd><strong class="text-primary" style="font-size: 1.5em;">@Model.CodigoReserva</strong></dd>
+
+                        <dt>@Html.DisplayNameFor(model => model.Estado)</dt>
+                        <dd>
+                            @switch (Model.Estado)
+                            {
+                                case "Confirmada":
+                                    <span class="label label-success">@Model.Estado</span>
+                                    break;
+                                case "CheckIn":
+                                    <span class="label label-info">Check-in Realizado</span>
+                                    break;
+                                case "Abordado":
+                                    <span class="label label-primary">@Model.Estado</span>
+                                    break;
+                                case "Cancelada":
+                                    <span class="label label-danger">@Model.Estado</span>
+                                    break;
+                            }
+                        </dd>
+
+                        <dt>@Html.DisplayNameFor(model => model.FechaReserva)</dt>
+                        <dd>@Model.FechaReserva.ToString("dddd, dd MMMM yyyy HH:mm")</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><i class="glyphicon glyphicon-plane"></i> Información del Vuelo</h3>
+                </div>
+                <div class="panel-body">
+                    <dl class="dl-horizontal">
+                        <dt>@Html.DisplayNameFor(model => model.NumeroVuelo)</dt>
+                        <dd><strong>@Model.NumeroVuelo</strong></dd>
+
+                        <dt>@Html.DisplayNameFor(model => model.NumeroAsiento)</dt>
+                        <dd><span class="badge badge-lg" style="font-size: 1.5em;">@Model.NumeroAsiento</span></dd>
+
+                        <dt>@Html.DisplayNameFor(model => model.Clase)</dt>
+                        <dd>
+                            @switch (Model.Clase)
+                            {
+                                case "Economica":
+                                    <span class="label label-default">Económica</span>
+                                    break;
+                                case "Ejecutiva":
+                                    <span class="label label-primary">Ejecutiva</span>
+                                    break;
+                                case "Primera":
+                                    <span class="label label-warning">Primera Clase</span>
+                                    break;
+                            }
+                        </dd>
+
+                        <dt>@Html.DisplayNameFor(model => model.Equipaje)</dt>
+                        <dd>@Model.Equipaje maleta(s)</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><i class="glyphicon glyphicon-user"></i> Información del Pasajero</h3>
+                </div>
+                <div class="panel-body">
+                    <dl class="dl-horizontal">
+                        <dt>@Html.DisplayNameFor(model => model.NombrePasajero)</dt>
+                        <dd><strong>@Model.NombrePasajero</strong></dd>
+
+                        <dt>@Html.DisplayNameFor(model => model.Precio)</dt>
+                        <dd><h3 style="color: #27ae60; margin: 0;">@Model.Precio.ToString("C", new System.Globalization.CultureInfo("es-CO"))</h3></dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <a href="@Url.Action("Index")" class="btn btn-default">
+                <i class="glyphicon glyphicon-arrow-left"></i> Volver a la Lista
+            </a>
+            @if (Model.Estado == "Confirmada")
+            {
+                <button type="button" class="btn btn-danger" onclick="cancelarReserva()">
+                    <i class="glyphicon glyphicon-remove"></i> Cancelar Reserva
+                </button>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function cancelarReserva() {
+            if (confirm('¿Está seguro que desea cancelar esta reserva?')) {
+                $.ajax({
+                    url: '@Url.Action("Cancelar", new { id = Model.ReservaID })',
+                    type: 'POST',
+                    data: { __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val() },
+                    success: function() {
+                        window.location.href = '@Url.Action("Index")';
+                    },
+                    error: function() {
+                        alert('Error al cancelar la reserva');
+                    }
+                });
+            }
+        }
+    </script>
+}
